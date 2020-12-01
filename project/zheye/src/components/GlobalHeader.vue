@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-16 16:57:37
- * @LastEditTime: 2020-11-18 10:39:26
+ * @LastEditTime: 2020-11-27 11:16:18
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vuets_zhihu/project/zheye/src/components/GlobalHeader.vue
@@ -55,5 +55,8 @@ export default defineComponent({
       required: true,
     },
   },
+  setup(props) {
+    console.log(props)
+  }
 });
 </script>

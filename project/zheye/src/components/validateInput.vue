@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-11-19 15:27:25
- * @LastEditTime: 2020-11-23 13:15:42
+ * @LastEditTime: 2020-11-23 22:18:16
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /vuets_zhihu/project/zheye/src/components/validateInput.vue
@@ -15,6 +15,7 @@
       :value="inputRef.val"
       @blur="validateInput"
       @input="updateValue"
+      v-bind="$attrs"
     />
     <span v-if="inputRef.error" class="invalid-feedback">
     {{inputRef.message}}
@@ -22,7 +23,8 @@
   </div>
 </template>
 <script lang='ts'>
-import { defineComponent, PropType, reactive } from "vue";
+import { defineComponent, PropType, reactive, onMounted } from "vue";
+import {  emitter } from './validateFrom.vue'
 const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 interface RuleProp {
   type: "required" | "email";
@@ -35,7 +37,9 @@ export default defineComponent({
     rules: Array as PropType<RulesProp>,
     modelValue: String
   },
+  inheritAttrs: false,
   setup(props,context) {
+    console.log(context.attrs)
     const inputRef = reactive({
       val: props.modelValue || '',
       error: false,
@@ -44,7 +48,7 @@ export default defineComponent({
     const updateValue = (e: KeyboardEvent)=>{
       const targetValue = (e.target as HTMLInputElement).value
       inputRef.val = targetValue
-      context.emit('update:modeValue', targetValue)
+      context.emit('update:modelValue', targetValue)
     }
     const validateInput = () => {
         if(props.rules){
@@ -63,8 +67,13 @@ export default defineComponent({
                 return passed
             })
             inputRef.error = !allPassed;
+            return allPassed
         }
+        return true
     };
+    onMounted(()=>{
+      emitter.emit('form-item-created', validateInput)
+    })
     return {
       inputRef,
       validateInput,
